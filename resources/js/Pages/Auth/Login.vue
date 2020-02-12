@@ -3,48 +3,74 @@
     <v-content>
       <v-container fluid>
         <v-row align="center" justify="center">
-          <v-col cols="12" sm="8" md="4" class="text-center">
-            <logo height="50" style="fill:white"></logo>
-          </v-col>
-        </v-row>
-        <v-row align="center" justify="center">
           <v-col cols="12" sm="8" md="4">
-            <v-card class="elevation-12">
-              <v-card-text>
-                <v-form>
+            <v-card raised max-width="450">
+              <v-toolbar flat dark color="blue-grey darken-4">
+                <v-toolbar-title>Sign in to your account</v-toolbar-title>
+              </v-toolbar>
+              <v-card-text class="pa-4 pb-0">
+                <v-form 
+                  ref="form"
+                  v-model="valid"
+                  aria-autocomplete="off"
+                  action="#"
+                  method="post"
+                  @submit.prevent="submit"
+                >
                   <v-row dense>
                     <v-col cols="12">
                       <v-text-field
                         v-model="form.email"
-                        label="Email"
-                        name="email"
-                        type="email"
+                        :rules="emailRules"
+                        required
+                        :errors="$page.errors.email"
                         :error-messages="$page.errors.email"
+                        label="Email"
+                        type="email"
                         outlined
+                        dense
                         autocomplete="email"
+                        @focus="$page.errors.email = null"
                       />
                     </v-col>
 
                     <v-col cols="12">
                       <v-text-field
                         v-model="form.password"
+                        :rules="passwordRules"
+                        required
+                        :errors="$page.errors.password"
                         label="Password"
                         name="password"
-                        type="password"
+                        :append-icon="e1 ? 'visibility' : 'visibility_off'"
+                        :type="e1 ? 'password' : 'text'"
                         outlined
+                        dense
                         autocomplete="current-password"
+                        @click:append="() => (e1 = !e1)"
+                        @focus="$page.errors.password = null"
                       />
-                    </v-col>
-
-                    <v-col cols="12">
-                      <v-checkbox class="pa-0 ma-0" label="Remember me" v-model="form.remember"></v-checkbox>
                     </v-col>
                   </v-row>
                 </v-form>
               </v-card-text>
-              <v-card-actions>
-                <v-spacer />
-                <v-btn @click="submit" large color="primary">Login</v-btn>
+              <v-card-actions class="pa-4 pt-0">
+                <v-row dense>
+                  <v-col cols="12">
+                    <v-btn 
+                      :class="loading ? 'blue-grey darken-2 white--text' : 'primary'"
+                      block 
+                      text 
+                      :loading="loading"
+                      @click="submit"
+                    >
+                      Sign In
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-btn block text @click="$inertia.visit(route('password.request'))">Forgot Password?</v-btn>
+                  </v-col>
+                </v-row>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -63,22 +89,27 @@ export default {
   },
   data() {
     return {
-      sending: false,
+      valid: false,
+      loading: false,
+      e1: true,
+      emailRules: [
+        v => !!v || 'The email field is required',
+        v => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'The email field must be a valid email',
+      ],
+      passwordRules: [v => !!v || 'The password field is required'],
       form: {
         email: null,
         password: null,
-        remember: null,
       },
     }
   },
   methods: {
     submit() {
-      this.sending = true
+      this.loading = true
       this.$inertia.post(this.route('login.attempt'), {
         email: this.form.email,
         password: this.form.password,
-        remember: this.form.remember,
-      }).then(() => this.sending = false)
+      }).then(() => this.loading = false)
     },
   },
 }

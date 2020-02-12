@@ -13,6 +13,10 @@
 
 // Auth
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login')->middleware('guest');
+Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request')->middleware('guest');
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email')->middleware('guest');
+Route::post('password/reset')->name('reset.password')->uses('Auth\ResetPasswordController@reset')->middleware('guest');
+Route::get('password/reset/{token}')->name('password.reset')->uses('Auth\ResetPasswordController@showResetForm')->middleware('guest');
 Route::post('login', 'Auth\LoginController@login')->name('login.attempt')->middleware('guest');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 

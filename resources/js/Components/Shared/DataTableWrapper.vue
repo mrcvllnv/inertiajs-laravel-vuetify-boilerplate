@@ -1,18 +1,24 @@
 <template>
-
   <v-row>
-
     <!-- THE SEARCH -->
-    <v-col cols="12" v-if="withSearch">
-      <v-row justify="end">
-        <v-col cols="12" md="6" lg="4" xl="3">
+    <v-col v-if="withSearch" cols="12" class="py-0">
+      <v-row justify="space-between" dense>
+        <v-col md="6" lg="4" xl="3">
           <v-text-field
             v-model="search"
             append-icon="search"
-            label="SEARCH"
-            single-line
+            label="Search"
             hide-details
-          ></v-text-field>
+            outlined
+            dense
+          />
+        </v-col>
+        <v-col md="6" lg="4" xl="3">
+          <v-row justify="end" dense>
+            <v-col cols="auto" class="py-0">
+              <v-btn color="primary" @click="buttonLink">{{ buttonTitle }}</v-btn>
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
     </v-col>
@@ -31,46 +37,47 @@
         class="elevation-1"
       >
         <template #item="{ item }">
-          <slot name="item" :item="item"/>
+          <slot name="item" :item="item" />
         </template>
 
         <template #no-results>
           <v-alert color="warning" icon="warning" outlined>
-            No results found for '{{search}}'
+            No results found for '{{ search }}'
           </v-alert>
         </template>
-
       </v-data-table>
     </v-col>
   </v-row>
 </template>
 
 <script>
-  export default {
-    name: 'DataTableWrapper',
+export default {
+  name: 'DataTableWrapper',
 
-    props: {
-      items: Array,
-      headers: Array,
-      sortBy: [String, Array],
-      withSearch: {
-        type: Boolean,
-        default: false
-      },
-      sortDesc: {
-        type: Boolean,
-        default: false
-      },
+  props: {
+    items: Array,
+    headers: Array,
+    sortBy: [String, Array],
+    withSearch: {
+      type: Boolean,
+      default: false,
     },
+    sortDesc: {
+      type: Boolean,
+      default: false,
+    },
+    buttonLink: Function,
+    buttonTitle: String,
+  },
 
-    data: vm => ({
-      search: '',
-      footerProps: {
-        'items-per-page-options': [10, 25, 50, -1],
-        'items-per-page-text': 'Per page',
-        'items-per-page-all-text': 'All'
-      },
-      itemsPerPage: 10,
-    })
-  }
+  data: () => ({
+    search: '',
+    footerProps: {
+      'items-per-page-options': [10, 25, 50, -1],
+      'items-per-page-text': 'Per page',
+      'items-per-page-all-text': 'All',
+    },
+    itemsPerPage: 10,
+  }),
+}
 </script>

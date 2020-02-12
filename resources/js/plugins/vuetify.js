@@ -6,10 +6,10 @@ Vue.use(Vuetify)
 
 const options = {
   theme: {
-    dark: true,
+    dark: false,
     themes: {
       light: {
-        primary: colors.lightBlue.base,
+        primary: colors.blueGrey.darken4,
         secondary: colors.orange.base,
         accent: colors.blue.base,
         error: colors.red.base,

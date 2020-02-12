@@ -1,24 +1,22 @@
 <template>
   <v-navigation-drawer
+    v-model="$root.sideDrawer"
     floating
     persistent
-    v-model="$root.sideDrawer" app
+    app
   >
-    <v-app-bar flat color="#303030">
-      <v-row align="center" justify="center">
-        <v-col cols="12" class="text-center pt-6">
-          <inertia-link href="/">
-            <logo style="fill: white" height="28" />
-          </inertia-link>
-        </v-col>
-      </v-row>
+    <v-app-bar color="primary" dark flat>
+      <v-toolbar-title>
+        <v-icon class="mr-2 mb-1">grain</v-icon>
+        Safety Delta
+      </v-toolbar-title>
     </v-app-bar>
-    <v-list dense shaped>
+    <v-list dense nav>
       <v-list-item-group
         :value="currentController"
-        active-class="light-blue lighten-5 blue--text text--darken-4"
+        active-class="blue-grey lighten-5 blue-grey--text text--darken-4 disabled"
       >
-        <v-list-item link @click="$inertia.visit(route('dashboard'))" value="/">
+        <v-list-item link value="/" @click="$inertia.visit(route('dashboard'))">
           <v-list-item-icon>
             <v-icon>dashboard</v-icon>
           </v-list-item-icon>
@@ -29,42 +27,60 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link @click="$inertia.visit(route('organizations.index'))" value="/organizations">
+        <v-list-item link value="/organizations" @click="$inertia.visit(route('organizations.index'))">
           <v-list-item-icon>
-            <v-icon>business</v-icon>
+            <v-icon>domain</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>
-              Organizations
+              Clients
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link @click="$inertia.visit(route('logout'), {method: 'post'})" value="/logout">
-          <v-list-item-icon>
-            <v-icon>exit_to_app</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>
-              Logout
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <v-list-group
+          prepend-icon="people"
+        >
+          <template v-slot:activator>
+            <v-list-item-title>Users</v-list-item-title>
+          </template>
 
+          <v-list-item link value="/users" @click="$inertia.visit(route('users.index'))">
+            <v-list-item-icon>
+              <v-icon>domain</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>
+                Users List
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item link value="/roles" @click="$inertia.visit(route('roles.index'))">
+            <v-list-item-icon>
+              <v-icon>domain</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>
+                User Roles
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script>
-  export default {
-    name: 'NavigationDrawer',
-    data: vm => ({}),
-    computed: {
-      currentController() {
-        const controller = location.pathname.substr(1).split('/').shift()
-        return `/${controller}`
-      }
+export default {
+  name: 'NavigationDrawer',
+  data: () => ({}),
+  computed: {
+    currentController() {
+      const controller = location.pathname.substr(1).split('/').shift()
+      return `/${controller}`
     },
-  }
+  },
+}
 </script>
